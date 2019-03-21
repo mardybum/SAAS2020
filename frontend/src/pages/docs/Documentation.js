@@ -11,7 +11,7 @@ import {
 
 const Documentation = () => (
   <Container fluid className="p-0">
-    <h1 className="h3 mb-3">Documentation</h1>
+    <h1 className="h3 mb-3">Documentation11</h1>
 
     <Row>
       <Col lg="6">

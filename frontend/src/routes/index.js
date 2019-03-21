@@ -232,7 +232,7 @@ const documentationRoutes = {
 const uiRoutes = {
   path: "/ui",
   name: "UI Elements",
-  header: "Components",
+  header: "Componentsss",
   icon: GridIcon,
   children: [
     {
@@ -344,21 +344,12 @@ const formRoutes = {
 };
 
 const tableRoutes = {
-  path: "/tables",
+  path: "/tables/bootstrap",
   name: "Tables",
   icon: ListIcon,
-  children: [
-    {
-      path: "/tables/bootstrap",
-      name: "Bootstrap",
-      component: BootstrapTables
-    },
-    {
-      path: "/tables/advanced-tables",
-      name: "Advanced",
-      component: AdvancedTables
-    }
-  ]
+  component: BootstrapTables,
+  children: null
+
 };
 
 const iconRoutes = {
@@ -429,16 +420,5 @@ export const page = [authRoutes];
 
 // All routes
 export default [
-  dashboardRoutes,
-  pageRoutes,
-  authRoutes,
-  layoutRoutes,
-  documentationRoutes,
-  uiRoutes,
-  chartRoutes,
-  formRoutes,
   tableRoutes,
-  iconRoutes,
-  calendarRoutes,
-  mapRoutes
 ];
