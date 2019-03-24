@@ -1,6 +1,10 @@
 import React from "react";
 import axios from "axios";
-
+import BootstrapTable from "react-bootstrap-table-next";
+import TableHeaderColumn from "react-bootstrap-table-next";
+import ToolkitProvider from "react-bootstrap-table2-toolkit";
+import paginationFactory from "react-bootstrap-table2-paginator";
+import cellEditFactory from "react-bootstrap-table2-editor";
 
 
 
@@ -24,7 +28,8 @@ import {
   Table
 } from "reactstrap";
 
-import { Edit2, Trash } from "react-feather";
+import { Edit2, Trash, MinusCircle, PlusCircle  } from "react-feather";
+
 
 import avatar1 from "../../assets/img/avatars/avatar.jpg";
 import avatar2 from "../../assets/img/avatars/avatar-2.jpg";
@@ -49,12 +54,12 @@ class PersonList extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-        refreshList = () => {
-            axios
-              .get("http://localhost:8000/api/todos/")
-              .then(res => this.setState({ todolist: res.data }))
-              .catch(err => console.log(err));
-        };
+    refreshList = () => {
+        axios
+          .get("http://localhost:8000/api/todos/")
+          .then(res => this.setState({ todolist: res.data }))
+          .catch(err => console.log(err));
+    };
 
       componentDidMount() {
         axios.get("http://localhost:8000/api/todos/")
@@ -65,9 +70,11 @@ class PersonList extends React.Component {
       }
 
 
-        handleSubmit = () => {
+        handleSubmit = e => {
 
-            console.log(this.state.activeItem)
+            e.preventDefault();
+
+
 
             const itemToBeSubmitted = {
                 title: this.state.activeItem.title,
@@ -76,12 +83,15 @@ class PersonList extends React.Component {
             };
 
 
+
             if (itemToBeSubmitted.id) {
+                console.log(itemToBeSubmitted)
               axios
                 .put(`http://localhost:8000/api/todos/${itemToBeSubmitted.id}/`, itemToBeSubmitted)
                 .then(res => this.refreshList());
               return;
             }
+
             axios
               .post("http://localhost:8000/api/todos/", itemToBeSubmitted)
               .then(res => this.refreshList());
@@ -101,12 +111,66 @@ class PersonList extends React.Component {
 
         handleDelete = item => {
 
-            console.log(item)
 
             axios
-              .delete(`http://localhost:8000/api/todos/${item.id}`)
+              .delete(`http://localhost:8000/api/todos/${item}`)
               .then(res => this.refreshList());
         };
+
+        editItem = item => {
+
+
+            if(this.state.todolist[this.state.todolist.length - 1].id === item.id)
+            {
+
+                console.log(item)
+                console.log(this.state.todolist[this.state.todolist.length - 1].id)
+
+                axios
+                    .put(`http://localhost:8000/api/todos/${item.id}/`, item)
+                    .then(res => this.refreshList());
+
+
+                  const itemToBeSubmitted = {
+                        title: " ",
+                        description: " ",
+                        completed: false
+                    };
+
+
+            axios
+              .post("http://localhost:8000/api/todos/", itemToBeSubmitted)
+              .then(res => this.refreshList());
+
+            }
+
+
+
+
+
+        };
+
+expandRow = {
+
+    renderer: row => (
+      <div>
+        {/* Put table here */}
+      </div>
+    ),
+    showExpandColumn: true,
+    expandHeaderColumnRenderer: ({ isAnyExpands }) =>
+      isAnyExpands ? (
+        <MinusCircle width={16} height={16} />
+      ) : (
+        <PlusCircle width={16} height={16} />
+      ),
+    expandColumnRenderer: ({ expanded }) =>
+      expanded ? (
+        <MinusCircle width={16} height={16} />
+      ) : (
+        <PlusCircle width={16} height={16} />
+      )
+  };
 
 
 
@@ -160,46 +224,72 @@ BasicForm = () => (
     </Card>
 );
 
-BasicTable = () => (
+
+tableColumns = [
+  {
+    dataField: "title",
+    text: "title",
+    sort: true,
+  },
+  {
+    dataField: "description",
+    text: "description",
+    type: 'textarea' ,
+    sort: true,
+  },
+  {
+    dataField: 'df1',
+    isDummyField: true,
+    text: 'Action 1',
+    editable: false,
+    formatter: (cellContent, row) => {
+
+
+      return (
+          <h5>
+            <Trash className="align-middle" type="submit" onClick={() => this.handleDelete(row.id)} size={18}  />
+          </h5>
+        );
+      }
+  }
+];
+
+cellEdit = cellEditFactory({
+
+    mode: 'click',
+    blurToSave: true,
+    afterSaveCell: (oldValue, newValue, row, column) => {
+        this.editItem(row)
+    }
+});
+
+
+
+
+PaginationTable = () => (
 
     <Card>
-        <CardHeader>
-        <CardTitle tag="h5">Basic Table</CardTitle>
+      <CardHeader>
+        <CardTitle tag="h5">Pagination</CardTitle>
         <h6 className="card-subtitle text-muted">
-        Using the most basic table markup, here’s how .table-based tables look
-        in Bootstrap.
+          Pagination by react-bootstrap-table2
         </h6>
-        </CardHeader>
+      </CardHeader>
+      <CardBody>
+        <BootstrapTable
+          keyField="id"
+          data={this.state.todolist}
+          columns={this.tableColumns}
+          deleteRow={ true }
+          expandRow={this.expandRow}
+          bootstrap4
+          cellEdit={ this.cellEdit }
+          bordered={false}>
+        </BootstrapTable>
 
-        <Table>
-        <thead>
-            <tr>
-                <th style={{ width: "40%" }}>Name</th>
-                <th style={{ width: "25%" }}>Phone Number</th>
-                <th className="d-none d-md-table-cell" style={{ width: "25%" }}>
-                Date of Birth
-                </th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-            <tbody>
-                { this.state.todolist.map((todo, key) =>
-                    <tr>
-                        <td key={todo.id}> {todo.title} </td>
-                        <td key={todo.id}> {todo.description} </td>
-                        <td className="d-none d-md-table-cell">June 21, 1961</td>
-                        <td className="table-action">
-                        <Edit2 className="align-middle mr-1" size={18} />
-                        <Trash className="align-middle" type="submit" onClick={() => this.handleDelete(todo)} size={18}  />
-                        </td>
-                    </tr>
-                )}
-            </tbody>
-        </Table>
+      </CardBody>
     </Card>
 );
-
-
 
 Tables = () => (
 
@@ -212,11 +302,7 @@ Tables = () => (
             </Col>
         </Row>
 
-        <Row>
-            <Col lg="12">
-            {this.BasicTable()}
-        </Col>
-        </Row>
+        {this.PaginationTable()}
     </Container>
 
 );

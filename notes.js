@@ -245,3 +245,85 @@ import React, { Component } from "react";
         );
       }
     }
+
+
+
+
+
+
+
+
+
+
+<Table deleteRow={ true } selectRow={ this.selectRowProp }>
+        <thead>
+            <tr>
+                <th style={{ width: "40%" }}>Name</th>
+                <th style={{ width: "25%" }}>Phone Number</th>
+                <th className="d-none d-md-table-cell" style={{ width: "25%" }}>
+                Date of Birth
+                </th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+            <tbody>
+                { this.state.todolist.map((todo, key) =>
+                    <tr>
+                        <td key={todo.id}> {todo.title} </td>
+                        <td key={todo.id}> {todo.description} </td>
+                        <td className="d-none d-md-table-cell">June 21, 1961</td>
+                        <td className="table-action">
+                        <Edit2 className="align-middle mr-1" size={18} />
+                        <Trash className="align-middle" type="submit" onClick={() => this.handleDelete(todo)} size={18}  />
+                        </td>
+
+
+                    </tr>
+                )}
+            </tbody>
+        </Table>
+
+
+
+
+    <Card>
+        <CardHeader>
+        <CardTitle tag="h5">Basic Table</CardTitle>
+        <h6 className="card-subtitle text-muted">
+        Using the most basic table markup, here’s how .table-based tables look
+        in Bootstrap.
+        </h6>
+        </CardHeader>
+
+        <Table deleteRow={ true } selectRow={ this.selectRowProp }>
+        <thead>
+            <tr>
+                <th style={{ width: "40%" }}>Name</th>
+                <th style={{ width: "25%" }}>Phone Number</th>
+                <th className="d-none d-md-table-cell" style={{ width: "25%" }}>
+                Date of Birth
+                </th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+            <tbody>
+                { this.state.todolist.map((todo, key) =>
+                    <tr>
+                        <td key={todo.id}> {todo.title} </td>
+                        <td key={todo.id}> {todo.description} </td>
+                        <td className="d-none d-md-table-cell">June 21, 1961</td>
+                        <td className="table-action">
+                        <Edit2 className="align-middle mr-1" size={18} />
+                        <Trash className="align-middle" type="submit" onClick={() => this.handleDelete(todo)} size={18}  />
+                        </td>
+
+
+                    </tr>
+                )}
+            </tbody>
+        </Table>
+
+
+
+
+    </Card>
