@@ -85,6 +85,11 @@ const Calendar = async(() => import("../pages/calendar/Calendar"));
 const VectorMaps = async(() => import("../pages/maps/VectorMaps"));
 const GoogleMaps = async(() => import("../pages/maps/GoogleMaps"));
 
+
+//Main SAAS
+const Main = async(() => import("../pages/saas/main"));
+
+
 // Routes
 const dashboardRoutes = {
   path: "/dashboard",
@@ -345,9 +350,18 @@ const formRoutes = {
 
 const tableRoutes = {
   path: "/tables/bootstrap",
-  name: "Tables",
+  name: "Experimental",
   icon: ListIcon,
   component: BootstrapTables,
+  children: null
+
+};
+
+const mainRoutes = {
+  path: "/saas/main",
+  name: "Main",
+  icon: ListIcon,
+  component: Main,
   children: null
 
 };
@@ -410,6 +424,7 @@ export const dashboard = [
   chartRoutes,
   formRoutes,
   tableRoutes,
+  mainRoutes,
   iconRoutes,
   calendarRoutes,
   mapRoutes
@@ -421,4 +436,5 @@ export const page = [authRoutes];
 // All routes
 export default [
   tableRoutes,
+  mainRoutes,
 ];
