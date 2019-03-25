@@ -174,7 +174,7 @@ class PersonList extends React.Component {
 
     tableColumns = [
       {
-        dataField: "id",
+        dataField: "zoneId",
         text: "Zone ID",
         headerStyle: (colum, colIndex) => {
           return { width: '120px'};

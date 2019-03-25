@@ -29,6 +29,7 @@ class ZoneSerializer(serializers.ModelSerializer):
         #print("create: ", validated_data)
         user = Zones.objects.create(**validated_data)
         print(Zones.setid(user))
+        user.save()
         return user
         # newID = Zones.getid(user)
         # user2 = Zones.objects.create(name=validated_data['name'], description=validated_data['description'], zoneId="hi")
