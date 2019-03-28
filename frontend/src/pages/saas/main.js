@@ -87,16 +87,18 @@ class PersonList extends React.Component {
 
     handleSubmit = e => {
 
+
+        //stop refreshing the site
         e.preventDefault();
 
         const itemToBeSubmitted = {
-            title: this.state.activeItem.title,
+            name: this.state.activeItem.name,
             description: this.state.activeItem.description,
-            completed: this.state.activeItem.completed
+            SLT: this.state.activeItem.completed,
+            threats: this.state.activeItem.threats
         };
 
         if (itemToBeSubmitted.id) {
-            console.log(itemToBeSubmitted)
           axios
             .put(`http://localhost:8000/api/zone/${itemToBeSubmitted.id}/`, itemToBeSubmitted)
             .then(res => this.refreshList());
@@ -105,6 +107,23 @@ class PersonList extends React.Component {
 
         axios
           .post("http://localhost:8000/api/zone/", itemToBeSubmitted)
+          .then(res => this.refreshList());
+    };
+
+
+    handleSubmitModal = item => {
+
+        console.log(item)
+
+
+        if (item.id) {
+          axios
+            .put(`http://localhost:8000/api/zone/${item.id}/`, item)
+            .then(res => this.refreshList());
+          return;
+        }
+        axios
+          .post("http://localhost:8000/api/zone/", item)
           .then(res => this.refreshList());
     };
 
@@ -126,7 +145,14 @@ class PersonList extends React.Component {
           .then(res => this.refreshList());
     };
 
+    toggle = () => {
+        this.setState({ modal: !this.state.modal });
+      };
+
     editItem = item => {
+
+        //Check if the user operates on the last row; This is in order to add requirements directly in the last row
+        //of the table
         if(this.state.zones[this.state.zones.length - 1].id === item.id)
         {
 
@@ -232,7 +258,11 @@ class PersonList extends React.Component {
         <Card>
           <CardHeader>
             <h6 className="card-subtitle text-muted">
-              <CenteredModal />
+              <CenteredModal
+                activeItem={this.state.activeItem}
+                toggle={this.toggle}
+                onSave={this.handleSubmitModal}
+                />
             </h6>
           </CardHeader>
           <CardBody>
@@ -271,7 +301,10 @@ class CenteredModal extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+        activeItem: this.props.activeItem
+    };
+
   }
 
   toggle = index => {
@@ -288,7 +321,32 @@ class CenteredModal extends React.Component {
     });
   }
 
+  resetValues () {
+
+    this.state.activeItem = {
+                id: "",
+                zone_id: "",
+                name: "",
+                SLT: "",
+                description: "",
+                threats: ""
+            }
+  };
+
+  handleChange = e => {
+        let { name, value } = e.target;
+
+        if (e.target.type === "checkbox") {
+            value = e.target.checked;
+        }
+
+        const activeItem = { ...this.state.activeItem, [name]: value };
+
+        this.setState({activeItem });
+    };
+
   render() {
+    const { toggle, onSave } = this.props;
     return (
       <div>
 
@@ -307,22 +365,49 @@ class CenteredModal extends React.Component {
                 centered
               >
                 <ModalHeader toggle={() => this.toggle(index)}>
-                  Centered modal
+                  Zone Creation
                 </ModalHeader>
                 <ModalBody className="text-center m-3">
-                  <p className="mb-0">
-                    Use Bootstrap’s JavaScript modal plugin to add dialogs to
-                    your site for lightboxes, user notifications, or completely
-                    custom content.
-                  </p>
+
+                  <Form>
+                        <FormGroup row>
+                          <Label sm={2} className="text-sm-right">
+                            Zone Title
+                          </Label>
+                          <Col sm={10}>
+                            <Input type="email" name="name" value={this.state.activeItem.name}
+                            onChange={this.handleChange}
+                            placeholder="Zone Title.." />
+                          </Col>
+                        </FormGroup>
+
+                        <FormGroup row>
+                          <Label sm={2} className="text-sm-right">
+                            Description
+                          </Label>
+                          <Col sm={10}>
+                            <Input
+                              type="textarea"
+                              name="description"
+                              value={this.state.activeItem.description}
+                              onChange={this.handleChange}
+                              placeholder="Zone Description.."
+                              rows="3"
+                            />
+                          </Col>
+                        </FormGroup>
+                  </Form>
+
+
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="secondary" onClick={() => this.toggle(index)}>
+                  <Button color="outline-dark" onClick={() => this.toggle(index)}>
                     Close
                   </Button>{" "}
                   <Button
                     color={color.value}
-                    onClick={() => this.toggle(index)}
+                    onClick={(event) => { onSave(this.state.activeItem); this.toggle(index); this.resetValues()}}
+
                   >
                     Save changes
                   </Button>
