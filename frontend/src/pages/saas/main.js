@@ -5,6 +5,8 @@ import TableHeaderColumn from "react-bootstrap-table-next";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import cellEditFactory from "react-bootstrap-table2-editor";
+import zone from './zone'
+import { Switch, Route, Link } from 'react-router-dom'
 
 
 
@@ -49,7 +51,7 @@ const colors = [
 ];
 
 
-class PersonList extends React.Component {
+class ZoneList extends React.Component {
   constructor(props) {
         super(props);
 
@@ -76,17 +78,20 @@ class PersonList extends React.Component {
           .catch(err => console.log(err));
     };
 
+
+    //Allways called when component initializes
     componentDidMount() {
-    axios.get("http://localhost:8000/api/zone/")
-      .then(res => {
-        const zones = res.data;
-        this.setState({ zones });
-      })
+        axios.get("http://localhost:8000/api/zone/")
+          .then(res => {
+            const zones = res.data;
+
+            this.setState({ zones });
+
+          })
     }
 
 
     handleSubmit = e => {
-
 
         //stop refreshing the site
         e.preventDefault();
@@ -113,9 +118,6 @@ class PersonList extends React.Component {
 
     handleSubmitModal = item => {
 
-        console.log(item)
-
-
         if (item.id) {
           axios
             .put(`http://localhost:8000/api/zone/${item.id}/`, item)
@@ -125,8 +127,11 @@ class PersonList extends React.Component {
         axios
           .post("http://localhost:8000/api/zone/", item)
           .then(res => this.refreshList());
+
+       console.log(item)
     };
 
+    //used to update the form
     handleChange = e => {
         let { name, value } = e.target;
 
@@ -145,58 +150,20 @@ class PersonList extends React.Component {
           .then(res => this.refreshList());
     };
 
+
+    //Toggle the state of the modal (shall it be displayed or not?)
     toggle = () => {
         this.setState({ modal: !this.state.modal });
-      };
-
-    editItem = item => {
-
-        //Check if the user operates on the last row; This is in order to add requirements directly in the last row
-        //of the table
-        if(this.state.zones[this.state.zones.length - 1].id === item.id)
-        {
-
-            console.log(item)
-            console.log(this.state.zones[this.state.zones.length - 1].id)
-
-            axios
-                .put(`http://localhost:8000/api/zone/${item.id}/`, item)
-                .then(res => this.refreshList());
-
-
-            const itemToBeSubmitted = {
-                    title: " ",
-                    description: " ",
-                    completed: false
-             };
-
-            axios
-              .post("http://localhost:8000/api/zone/", itemToBeSubmitted)
-              .then(res => this.refreshList());
-        }
     };
 
-    expandRow = {
+    openZone = item => {
 
-        renderer: row => (
-          <div>
-            {/* Put table here */}
-          </div>
-        ),
-        showExpandColumn: true,
-        expandHeaderColumnRenderer: ({ isAnyExpands }) =>
-          isAnyExpands ? (
-            <MinusCircle width={16} height={16} />
-          ) : (
-            <PlusCircle width={16} height={16} />
-          ),
-        expandColumnRenderer: ({ expanded }) =>
-          expanded ? (
-            <MinusCircle width={16} height={16} />
-          ) : (
-            <PlusCircle width={16} height={16} />
-          )
+       //console.log('openZone')
+       // console.log(this.state.zones.find(element => element.id === item.id));
     };
+
+
+
 
     tableColumns = [
       {
@@ -236,27 +203,28 @@ class PersonList extends React.Component {
         formatter: (cellContent, row) => {
 
           return (
-            <Button color="outline-dark" className="mr-1 mb-1" >
-                {"Details"}
-            </Button>
+
+            //Pass the zone ID from the row that has been clicked (row.id) and pass it to the link
+            //Find the passed property in the zone array and set it to the active item
+            <Link to={{ pathname: '/saas/zone', state: { id: row.id} }}>
+                <Button color="outline-dark" onClick={() => this.openZone(row)} className="mr-1 mb-1" >
+                    {"Details"}
+                </Button>
+            </Link>
+
           );
         }
       }
     ];
 
-    cellEdit = cellEditFactory({
 
-        mode: 'click',
-        blurToSave: true,
-        afterSaveCell: (oldValue, newValue, row, column) => {
-            this.editItem(row)
-        }
-    });
+
 
     PaginationTable = () => (
 
         <Card>
           <CardHeader>
+            <CardTitle tag="h5">Zones</CardTitle>
             <h6 className="card-subtitle text-muted">
               <CenteredModal
                 activeItem={this.state.activeItem}
@@ -270,14 +238,15 @@ class PersonList extends React.Component {
               keyField="id"
               data={this.state.zones}
               columns={this.tableColumns}
-              expandRow={this.expandRow}
               bootstrap4
+              hover
               bordered={false}>
             </BootstrapTable>
 
           </CardBody>
         </Card>
     );
+
 
     Renderer = () => (
 
@@ -375,7 +344,7 @@ class CenteredModal extends React.Component {
                             Zone Title
                           </Label>
                           <Col sm={10}>
-                            <Input type="email" name="name" value={this.state.activeItem.name}
+                            <Input type="text" name="name" value={this.state.activeItem.name}
                             onChange={this.handleChange}
                             placeholder="Zone Title.." />
                           </Col>
@@ -420,4 +389,4 @@ class CenteredModal extends React.Component {
   }
 }
 
-export default PersonList;
+export default ZoneList;

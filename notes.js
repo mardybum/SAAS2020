@@ -327,3 +327,58 @@ import React, { Component } from "react";
 
 
     </Card>
+
+
+
+
+          tableColumnsComponent = [
+      {
+        dataField: "Component ID",
+        text: "id",
+        sort: true,
+      },
+      {
+        dataField: "Name",
+        text: "description",
+        type: 'textarea' ,
+        sort: true,
+      },
+      {
+        dataField: 'df1',
+        isDummyField: true,
+        text: 'Action 1',
+        editable: false,
+        formatter: (cellContent, row) => {
+
+
+          return (
+              <h5>
+                <Trash className="align-middle" type="submit" onClick={() => this.handleDelete(row.id)} size={18}  />
+              </h5>
+            );
+          }
+      }
+    ];
+
+    <div class="input-group">
+                <FormGroup>
+                  <Input type="text" float="left" name="title" size="35" value={this.state.activeItem.title} onChange={this.handleChange} />
+                </FormGroup>
+            <span class="input-group-addon"></span>
+                <FormGroup>
+                  <Input type="text" float="left" name="title" value={this.state.activeItem.title} onChange={this.handleChange} />
+                </FormGroup>
+             </div>
+          </CardBody>
+
+
+       //Custom CSS
+            <div class="form-row">
+    <div class="col-7">
+      <input type="text" class="form-control field" placeholder=""/>
+    </div>
+    <div class="col">
+      <input type="text" class="form-control field" placeholder=""/>
+    </div>
+  </div>
+</form>

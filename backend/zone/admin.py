@@ -1,8 +1,12 @@
 from django.contrib import admin
-from .models import Zones # add this
+from .models import *
 
-class ZonesAdmin(admin.ModelAdmin):  # add this
-  list_display = ('name', 'description', 'SLT', 'threats') # add this
-
-# Register your models here.
-admin.site.register(Zones, ZonesAdmin) # add this
+admin.site.register(Zones)
+admin.site.register(Component)
+admin.site.register(Threats)
+admin.site.register(CounterMeasure)
+admin.site.register(Vulnerability)
+admin.site.register(Risks)
+admin.site.register(Impact)
+admin.site.register(DamageList)
+admin.site.register(LikeliHood)

@@ -97,6 +97,7 @@ class PersonList extends React.Component {
               .then(res => this.refreshList());
         };
 
+        //used to update the forms
         handleChange = e => {
             let { name, value } = e.target;
 
@@ -117,15 +118,21 @@ class PersonList extends React.Component {
               .then(res => this.refreshList());
         };
 
+        getActiveItem = () => {
+
+            return this.state.activeItem;
+        };
+
         editItem = item => {
 
-
+            //get last element of the list
             if(this.state.todolist[this.state.todolist.length - 1].id === item.id)
             {
 
                 console.log(item)
                 console.log(this.state.todolist[this.state.todolist.length - 1].id)
 
+                //Make changes to the last element
                 axios
                     .put(`http://localhost:8000/api/todos/${item.id}/`, item)
                     .then(res => this.refreshList());
@@ -137,10 +144,10 @@ class PersonList extends React.Component {
                         completed: false
                     };
 
-
-            axios
-              .post("http://localhost:8000/api/todos/", itemToBeSubmitted)
-              .then(res => this.refreshList());
+                //Add another last element
+                axios
+                  .post("http://localhost:8000/api/todos/", itemToBeSubmitted)
+                  .then(res => this.refreshList());
 
             }
 

@@ -87,7 +87,9 @@ const GoogleMaps = async(() => import("../pages/maps/GoogleMaps"));
 
 
 //Main SAAS
+//Each page needs to be registered here
 const Main = async(() => import("../pages/saas/main"));
+const Zone = async(() => import("../pages/saas/zone"));
 
 
 // Routes
@@ -366,6 +368,15 @@ const mainRoutes = {
 
 };
 
+const zoneRoutes = {
+  path: "/saas/zone",
+  name: "Zone",
+  icon: ListIcon,
+  component: Zone,
+  children: null
+
+};
+
 const iconRoutes = {
   path: "/icons",
   name: "Icons",
@@ -415,6 +426,7 @@ const mapRoutes = {
 };
 
 // Dashboard specific routes
+//Each page that will be used needs to be registered here
 export const dashboard = [
   dashboardRoutes,
   pageRoutes,
@@ -425,6 +437,7 @@ export const dashboard = [
   formRoutes,
   tableRoutes,
   mainRoutes,
+  zoneRoutes,
   iconRoutes,
   calendarRoutes,
   mapRoutes
@@ -434,6 +447,7 @@ export const dashboard = [
 export const page = [authRoutes];
 
 // All routes
+//All pages that are in the navbar need to be registered here
 export default [
   tableRoutes,
   mainRoutes,
